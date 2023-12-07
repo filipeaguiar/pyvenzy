@@ -1,0 +1,61 @@
+site_name: Integração Invenzi
+
+
+# Repository
+repo_name: pyvenzi
+repo: https://github.com/
+# Copyright
+copyright: Filipe Aguiar
+
+#This specifies the autogeneration portion
+pages:
+  - page: "modules/colaborador.md"
+    source: "colaborador.py"
+    classes:
+      - Colaborador
+
+  - page: "modules/combolists.md"
+    source: "combolists.py"
+    classes:
+      - ComboList
+
+  - page: "modules/accesslevel.md"
+    source: "accesslevel.py"
+    classes:
+      - AccessLevel
+
+  - page: "modules/paciente.md"
+    source: "paciente.py"
+    classes:
+      - Paciente
+
+  - page: "modules/database.md"
+    source: "database.py"
+    classes:
+      - DataBase
+
+  - page: "modules/acompanhante.md"
+    source: "acompanhante.py"
+    classes:
+      - Acompanhante
+
+  - page: "modules/estudante.md"
+    source: "estudante.py"
+    classes:
+      - Estudante
+
+  - page: "modules/settings.md"
+    source: "settings.py"
+    functions:
+      - init
+
+  - page: "modules/helperfunctions.md"
+    source: "helperfunctions.py"
+    classes:
+      - helper
+
+  - page: "modules/card.md"
+    source: "card.py"
+    classes:
+      - Card
+

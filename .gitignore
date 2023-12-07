@@ -1,0 +1,12 @@
+.env
+*.csv
+*.txt
+.vscode
+.*.spec
+*.spec
+main.spec
+build
+dist
+__pycache__
+docs/
+automate_mkdocs.py

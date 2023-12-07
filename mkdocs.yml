@@ -1,0 +1,37 @@
+site_name: Integração Invenzi
+ 
+
+# Repository
+repo_name: pyvenzi
+repo_url: https://github.com/
+edit_uri: ""
+# Copyright
+copyright: Filipe Aguiar
+
+docs_dir: "docs/sources"
+
+plugins:
+  - search
+
+theme:
+  name: 'material'
+  custom_dir: 'docs'
+  palette:
+    primary: 'white'
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - instant
+nav:
+  - Início: index.md
+  - Classes:
+    - accesslevel: modules/accesslevel.md
+    - acompanhante: modules/acompanhante.md
+    - card: modules/card.md
+    - colaborador: modules/colaborador.md
+    - combolists: modules/combolists.md
+    - database: modules/database.md
+    - estudante: modules/estudante.md
+    - helperfunctions: modules/helperfunctions.md
+    - paciente: modules/paciente.md
+    - settings: modules/settings.md
