@@ -185,6 +185,20 @@ class Paciente:
         return pacientes
 
     @staticmethod
+    def getLiberacoesLivreAcesso():
+        """
+        Obtém as liberações de pacientes com livre acesso.
+
+        Returns:
+            list: As liberações de pacientes.
+        """
+
+        sql = DataBase.readSQL("liberacao_pacientes_livre_acesso")
+        sql = str.format(sql)
+        pacientes = DataBase.runQuery(sql)
+        return pacientes
+
+    @staticmethod
     def ativarPaciente(idNumber: int):
         """
         Ativa um paciente no sistema Invenzi.
