@@ -20,3 +20,5 @@ def init():
         lastUpdated = data["lastUpdated"]
     global salt
     salt = os.getenv("SALT")
+    global sql_server 
+    sql_server = os.getenv("SQLSERVER")

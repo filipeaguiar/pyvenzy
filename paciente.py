@@ -3,7 +3,7 @@ import requests
 import json
 from accesslevel import AccessLevel
 from helperfunctions import helper
-from datetime import datetime
+from datetime import datetime, timedelta
 from card import Card
 from combolists import ComboList
 import settings
@@ -213,7 +213,13 @@ class Paciente:
         headers = {"Content-Type": "application/json"}
         dt = datetime.now()
         dts = dt.replace(hour=0, minute=0, second=0, microsecond=0)
+        dts = dts + timedelta(hours=3)
         dte = dt.replace(hour=23, minute=59, second=59, microsecond=999)
+        dte = dte + timedelta(hours=3)
+        print(json.dumps({
+                    "VisitStart": dts.strftime("%Y-%m-%dT%H:%M:%S"),
+                    "VisitEnd": dte.strftime("%Y-%m-%dT%H:%M:%S")
+                }, indent=2))
         paciente = Paciente.getPacienteByIdNumber(idNumber)
         visita_iniciada = False
         expired_visit = None
