@@ -1,13 +1,10 @@
-import re
 import requests
 import json
 from helperfunctions import helper
 from card import Card
 from combolists import ComboList
 import settings
-from database import DataBase
 from accesslevel import AccessLevel
-from colaborador import Colaborador
 
 
 class Estudante:

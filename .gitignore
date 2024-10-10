@@ -10,3 +10,4 @@ dist
 __pycache__
 docs/
 automate_mkdocs.py
+*.ipynb

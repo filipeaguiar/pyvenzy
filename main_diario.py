@@ -15,6 +15,7 @@ from acompanhante import Acompanhante
 from helperfunctions import helper
 from database import DataBase
 from datetime import datetime
+from sincronizar_datas import sincronizar as sincronizar_datas
 
 # Ignore warnings
 warnings.filterwarnings("ignore")
@@ -35,6 +36,9 @@ settings.accesslevels = AccessLevel.getAccessLevels()
 currentDate = DataBase.getTime()
 
 def main():
+  
+  sincronizar_datas()
+  
   # Get daily releases
   pacientes_diarios = Paciente.getLiberacoesDiarias()
   print("Ativando Pacientes do dia")
@@ -42,6 +46,8 @@ def main():
   for paciente in pacientes_diarios:
     Paciente.ativarPaciente(paciente["prontuario"])
     sleep(0.2)
+
+
 # Call main function
 main()
 
