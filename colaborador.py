@@ -9,33 +9,11 @@ from accesslevel import AccessLevel
 
 
 class Colaborador:
-    """
-    Classe que representa um colaborador.
-
-    Essa classe contém métodos estáticos para buscar, atualizar e criar colaboradores.
-    Também possui métodos para ativar e desativar usuários.
-
-    Atributos:
-        Nenhum atributo definido.
-    """
     @staticmethod
     def getColaboradorByIdNumber(IdNumber):
-        """
-        Retorna as informações do colaborador com base no número de identificação.
-
-        Parâmetros:
-        - IdNumber (str): O número de identificação do colaborador.
-
-        Retorna:
-        - dict: Um dicionário contendo as informações do colaborador.
-
-        Exceções:
-        - Exception: Caso ocorra algum erro ao buscar o colaborador.
-        """
         try:
             colaborador = requests.get(
-                f"{settings.baseUrl}/cardholders?IdNumber={IdNumber}",
-                params={"includeTables": "Cards", "ChType": 3},
+                f"{settings.baseUrl}/cardholders?IdNumber={IdNumber}&ChType=3&includeTables=Cards",
                 verify=False,
             )
             colaborador.raise_for_status()
@@ -46,36 +24,13 @@ class Colaborador:
 
     @staticmethod
     def getAllUpdates(lastUpdated):
-        """
-        Retorna todos os colaboradores atualizados desde a última data fornecida.
-
-        Parâmetros:
-        lastUpdated (str): A data da última atualização no formato 'YYYY-MM-DD'.
-
-        Retorna:
-        list: Uma lista contendo os colaboradores atualizados.
-
-        Exemplo:
-        >>> getAllUpdates('2022-01-01')
-        ['colaborador1', 'colaborador2', 'colaborador3']
-        """
         sql = DataBase.readSQL("colaborador")
-        sql = sql.format(lastUpdated)
-        print(sql)
+        sql = DataBase.formatedquery(sql, lastUpdated)
         colaboradores = DataBase.runQuery(sql)
         return colaboradores
 
     @staticmethod
     def getColaboradores(colaboradores):
-        """
-        Retorna uma lista de colaboradores cujo CHType seja igual a 3 [Colaborador].
-
-        Args:
-            colaboradores (list): Lista de colaboradores.
-
-        Returns:
-            list: Lista de colaboradores cujo CHType seja igual a 3 [Colaborador].
-        """
         return [
             colaborador
             for colaborador in colaboradores
@@ -84,15 +39,6 @@ class Colaborador:
 
     @staticmethod
     def updateColaboradores(colaboradores):
-        """
-        Atualiza os colaboradores no sistema.
-
-        Args:
-            colaboradores (list): Uma lista de dicionários, obtidos no Banco de Dados, contendo as informações dos colaboradores.
-
-        Returns:
-            list: A lista de colaboradores atualizada.
-        """
         for colaborador in colaboradores:
             invenziColaborador = Colaborador.getColaboradorByIdNumber(
                 colaborador["IdNumber"]
@@ -107,16 +53,6 @@ class Colaborador:
 
     @staticmethod
     def updateColaborador(colaboradorInvenzi, colaboradorAGHU):
-        """
-        Atualiza um colaborador no sistema.
-
-        Args:
-            colaboradorInvenzi (dict): Um dicionário contendo as informações do colaborador no Invenzi.
-            colaboradorAGHU (dict): Um dicionário contendo as informações do colaborador no AGHU.
-
-        Returns:
-            bool: True se o colaborador foi atualizado com sucesso, False caso contrário.
-        """
         helper.printOrange(
             f'Atualizando Colaborador: {colaboradorInvenzi["FirstName"]} - {colaboradorInvenzi["IdNumber"]}'
         )
@@ -170,15 +106,6 @@ class Colaborador:
 
     @staticmethod
     def createColaborador(colaborador):
-        """
-        Cria um colaborador no sistema.
-
-        Args:
-            colaborador (dict): Um dicionário contendo as informações do colaborador.
-
-        Returns:
-            dict: Um dicionário contendo as informações do colaborador criado.
-        """
         colaboradorData = {
             "ChType": 3,
             "IdNumber": colaborador["IdNumber"],
@@ -221,15 +148,6 @@ class Colaborador:
 
     @staticmethod
     def deactivateUser(user):
-        """
-        Desativa um usuário.
-
-        Args:
-            user (dict): O usuário a ser desativado.
-
-        Returns:
-            bool: True se o usuário foi desativado com sucesso, False caso contrário.
-        """
         user["CHState"] = 1
         try:
             response = requests.put(
@@ -246,15 +164,6 @@ class Colaborador:
     # Cartões (QR-codes) são ativados automaticamente ao ativar o usuário
     @staticmethod
     def activateUser(user):
-        """
-        Ativa um usuário.
-
-        Args:
-            user (dict): O usuário a ser ativado.
-
-        Returns:
-            bool: True se o usuário foi ativado com sucesso, False caso contrário.
-        """
         user["CHState"] = 0
         try:
             response = requests.put(

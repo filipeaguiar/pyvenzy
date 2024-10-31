@@ -4,26 +4,8 @@ from helperfunctions import helper
 
 
 class AccessLevel:
-    """
-    Classe que representa os níveis de acesso.
-
-    Essa classe contém métodos estáticos para obter informações sobre os níveis de acesso disponíveis,
-    adicionar e remover níveis de acesso de um titular de cartão.
-
-    Attributes:
-        Nenhum atributo.
-    """
-
     @staticmethod
     def getAccessLevels():
-        """
-        Retorna uma lista de níveis de acesso.
-
-        Retorna uma lista contendo dicionários com informações sobre os níveis de acesso disponíveis.
-
-        Returns:
-            list: Uma lista de dicionários contendo informações sobre os níveis de acesso.
-        """
         return [
             {
                 "AccessLevelID": 4,
@@ -77,32 +59,13 @@ class AccessLevel:
 
     @staticmethod
     def getAccessLevel(name: str):
-        """
-        Retorna o ID do nível de acesso com base no nome fornecido.
-
-        Args:
-            name (str): O nome do nível de acesso.
-
-        Returns:
-            int or None: O ID do nível de acesso correspondente ou None se não for encontrado.
-        """
         accessLevel = [
             item for item in settings.accesslevels if item["AccessLevelName"] == name
         ]
-        return accessLevel[0]["AccessLevelID"] if accessLevel else None
+        return accessLevel[0]["AccessLevelID"] if accessLevel else None  #
 
     @staticmethod
     def addAccessLevel(cardholder_CHID: int, accessLevel: str):
-        """
-        Adiciona um nível de acesso ao titular do cartão.
-
-        Args:
-            cardholder_CHID (int): O ID do titular do cartão.
-            accessLevel (str): O nível de acesso a ser adicionado.
-
-        Returns:
-            bool: True se o nível de acesso foi adicionado com sucesso, False caso contrário.
-        """
         accessLevelId = AccessLevel.getAccessLevel(accessLevel)
         if accessLevelId is None:
             return False
@@ -118,16 +81,6 @@ class AccessLevel:
 
     @staticmethod
     def deleteAccessLevel(cardholder_CHID: int, accessLevel: str):
-        """
-        Remove um nível de acesso de um titular de cartão.
-
-        Args:
-            cardholder_CHID (int): O ID do titular do cartão.
-            accessLevel (str): O nível de acesso a ser removido.
-
-        Returns:
-            bool: True se o nível de acesso foi removido com sucesso, False caso contrário.
-        """
         accessLevelId = AccessLevel.getAccessLevel(accessLevel)
         if accessLevelId is None:
             return False

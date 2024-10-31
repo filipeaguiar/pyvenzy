@@ -5,23 +5,8 @@ import settings
 
 
 class Card:
-    """
-    Classe responsável por manipular os Cards (QR-Codes) de todos os tipos de usuário. Atualmente em desuso.
-    """
     @staticmethod
     def createCard(IdNumber):
-        """
-        Cria um novo cartão para um usuário com base no número de identificação fornecido.
-
-        Parâmetros:
-        - IdNumber (int): Número de identificação do usuário.
-
-        Retorna:
-        - card (dict): Dicionário contendo as informações do cartão criado.
-
-        Exceções:
-        - Retorna None em caso de erro durante a criação do cartão.
-        """
         newCard = {
             "ClearCode": int(IdNumber),
             "CardType": 0,
@@ -51,16 +36,6 @@ class Card:
 
     @staticmethod
     def assignCardToUser(colaboradorId, card):
-        """
-        Associa um cartão a um usuário.
-
-        Args:
-            colaboradorId (int): O ID do colaborador.
-            card (dict): O dicionário contendo as informações do cartão.
-
-        Returns:
-            bool: True se o cartão foi associado com sucesso, False caso contrário.
-        """
         print(
             f"Associando o cartão {card.get('CardNumber')} ao usuário {colaboradorId}"
         )
@@ -87,15 +62,6 @@ class Card:
 
     @staticmethod
     def getUserCards(colaboradorId):
-        """
-        Obtém os cartões de um usuário.
-
-        Args:
-            colaboradorId (int): O ID do colaborador.
-
-        Returns:
-            list: Uma lista de cartões do usuário, ou None se ocorrer um erro.
-        """
         print(f"Buscando cartões do usuário {colaboradorId}")
         try:
             getCardsRequest = requests.get(
@@ -115,15 +81,6 @@ class Card:
 
     @staticmethod
     def getCardById(CardClearCode):
-        """
-        Obtém um cartão pelo seu código de identificação.
-
-        Args:
-            CardClearCode (str): O código de identificação do cartão.
-
-        Returns:
-            dict or None: Um dicionário contendo as informações do cartão encontrado ou None caso não seja encontrado.
-        """
         print(f"Buscando cartão {CardClearCode}")
         try:
             getCardRequest = requests.get(
@@ -141,12 +98,6 @@ class Card:
 
     @staticmethod
     def activateCard(card):
-        """
-        Ativa um cartão.
-
-        :param card: O dicionário que representa o cartão a ser ativado.
-        :type card: dict
-        """
         card["CardState"] = 0
         try:
             response = requests.put(

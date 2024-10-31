@@ -7,22 +7,8 @@ from accesslevel import AccessLevel
 from datetime import datetime, timedelta
 
 class Acompanhante:
-    """
-    Classe responsável por lidar com acompanhantes no sistema Invenzi.
-    """
-
     @staticmethod
     def syncAcompanhantes(lastUpdated):
-        """
-        Sincroniza os acompanhantes com a base de dados, verificando se existem novos acompanhantes
-        desde a última atualização e criando-os no sistema Invenzi.
-
-        Args:
-            lastUpdated (datetime): Data e hora da última atualização.
-
-        Returns:
-            None
-        """
         sql = DataBase.readSQL("acompanhante")
         sql = DataBase.formatedquery(sql, lastUpdated)
         acompanhantes = DataBase.runQuery(sql)
@@ -52,19 +38,6 @@ class Acompanhante:
 
     @staticmethod
     def getAcompanhanteById(idNumber):
-        """
-        Obtém um acompanhante pelo número de identificação.
-
-        Args:
-            idNumber (str): O número de identificação do acompanhante.
-
-        Returns:
-            dict or None: Um dicionário contendo os dados do acompanhante, ou None se ocorrer um erro.
-
-        Raises:
-            requests.RequestException: Exceção lançada em caso de erro na requisição.
-
-        """
         try:
             response = requests.get(
                 f"{settings.baseUrl}/cardholders?IdNumber={idNumber}&ChType=7",
@@ -81,16 +54,6 @@ class Acompanhante:
 
     @staticmethod
     def createAcompanhante(acompanhante):
-        """
-        Cria um acompanhante no sistema.
-
-        Args:
-            acompanhante (dict): Dicionário contendo os dados do acompanhante.
-
-        Returns:
-            dict: Dicionário contendo a resposta da requisição de criação do acompanhante.
-                Em caso de erro, retorna False.
-        """
         try:
             helper.printOrange(f"Criando Acompanhante {acompanhante['IdNumber']}")
             acompanhanteData = {
@@ -118,21 +81,6 @@ class Acompanhante:
 
     @staticmethod
     def linkAcompanhante(pacienteId, acompanhanteId):
-        """
-        Realiza o link entre um acompanhante e um paciente.
-
-        Args:
-            pacienteId (int): O ID do paciente.
-            acompanhanteId (int): O ID do acompanhante.
-
-        Returns:
-            dict: Um dicionário contendo a resposta da requisição.
-
-        Raises:
-            requests.ConnectionError: Erro de conexão com o servidor.
-            Exception: Outros erros não especificados.
-
-        """
         try:
             linkedData = {
                 "CHID": acompanhanteId,

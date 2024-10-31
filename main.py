@@ -15,6 +15,7 @@ from acompanhante import Acompanhante
 from helperfunctions import helper
 from database import DataBase
 from datetime import datetime
+from helperfunctions import api_check
 
 # Ignore warnings
 warnings.filterwarnings("ignore")
@@ -76,11 +77,12 @@ def main():
     
 
 if __name__ == "__main__":
-    # Call main function
-    main()
+    if api_check(settings.baseUrl):
+      # Call main function
+      main()
 
-    # Print current date and time
-    print(currentDate)
+      # Print current date and time
+      print(currentDate)
 
     # Exit program
     exit()

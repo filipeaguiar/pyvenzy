@@ -1,28 +1,20 @@
+from datetime import datetime, timedelta
+import re
 import requests
 import json
 from helperfunctions import helper
 from card import Card
 from combolists import ComboList
 import settings
+from database import DataBase
 from accesslevel import AccessLevel
-
+from colaborador import Colaborador
+from decorators import verificar_resposta
 
 class Estudante:
-    """
-    Classe responsável por lidar com estudantes no sistema Invenzi.
-    """
-
+    @verificar_resposta
     @staticmethod
     def getEstudanteByIdNumber(IdNumber):
-        """
-        Obtém um estudante pelo número de identificação.
-
-        Args:
-            IdNumber (int): O número de identificação do estudante.
-
-        Returns:
-            dict: O estudante, ou None se não for encontrado.
-        """
         try:
             colaborador = requests.get(
                 f"{settings.baseUrl}/cardholders?IdNumber={IdNumber}&ChType=8&includeTables=Cards",
@@ -37,30 +29,12 @@ class Estudante:
 
     @staticmethod
     def getEstudantes(colaboradores):
-        """
-        Obtém os estudantes de uma lista de colaboradores.
-
-        Args:
-            colaboradores (list): A lista de colaboradores.
-
-        Returns:
-            list: A lista de estudantes.
-        """
         return [
             colaborador for colaborador in (colaboradores) if colaborador["CHType"] == 8
         ]
 
     @staticmethod
     def updateEstudantes(estudantes):
-        """
-        Atualiza os estudantes no sistema Invenzi.
-
-        Args:
-            estudantes (list): A lista de estudantes.
-
-        Returns:
-            list: A lista de estudantes atualizados.
-        """
         for estudante in estudantes:
             invenziEstudante = Estudante.getEstudanteByIdNumber(
                 estudante.get("IdNumber")
@@ -75,16 +49,6 @@ class Estudante:
 
     @staticmethod
     def updateEstudante(estudanteInvenzi, estudanteAGHU):
-        """
-        Atualiza um estudante no sistema Invenzi.
-
-        Args:
-            estudanteInvenzi (dict): O estudante no sistema Invenzi.
-            estudanteAGHU (dict): O estudante no sistema AGHU.
-
-        Returns:
-            bool: True se o estudante foi atualizado, False caso contrário.
-        """
         helper.printOrange(
             f'Atualizando Estudante: {estudanteInvenzi["FirstName"]} - {estudanteInvenzi["IdNumber"]}'
         )
@@ -125,18 +89,9 @@ class Estudante:
             helper.printRed(f"Erro Ao Atualizar Colaborador: {error}")
             return False
 
+    @verificar_resposta
     @staticmethod
     def createEstudante(estudante):
-        """
-        Cria um estudante no sistema Invenzi.
-
-        Args:
-            estudante (dict): O estudante.
-
-        Returns:
-            dict or None: O estudante criado, ou None se ocorrer um erro.
-        """
-
         estudanteData = {
             "ChType": 8,
             "IdNumber": estudante["IdNumber"],
@@ -170,3 +125,38 @@ class Estudante:
         except requests.exceptions as error:
             helper.printRed(error)
             return None
+    @staticmethod
+    def activateEstudante(user):
+        user["CHState"] = 0
+        try:
+            response = requests.put(
+                f"{settings.baseUrl}/cardholders",
+                data=json.dumps(user, default=str),
+                headers={"Content-Type": "application/json"},
+                verify=False,
+            )
+            return True
+        except requests.exceptions as error:
+            helper.printRed(error)
+            return False
+        
+    @staticmethod
+    def ativarCartoesEstudantes():
+        estudantes = requests.get(
+            f"{settings.baseUrl}/cardholders/searchGeneric?filter.cHType=8&filter.cHState=0&limit=10000&includeTables=Cards",
+            verify=False,
+        )
+
+        estudantes = estudantes.json()
+        # estudantes =  estudantes where estudante[LastModifDateTime] < datetime.now() - timedelta(days=5)
+        estudantes = [estudante for estudante in estudantes if datetime.fromisoformat(estudante["LastModifDateTime"]) < datetime.now() - timedelta(days=5)]
+
+        for estudante in estudantes:
+            
+            AccessLevel.addAccessLevel(estudante["CHID"], "Acesso Estudante")
+            if estudante["Cards"]:
+                if estudante["Cards"][0]["CardState"] != 0:
+                    helper.printOrange(
+                        f'Ativando Cartão: {estudante["FirstName"]} - {estudante["IdNumber"]}'
+                    )
+                    Card.activateCard(estudante["Cards"][0])

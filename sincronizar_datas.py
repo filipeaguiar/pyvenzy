@@ -1,5 +1,6 @@
 import requests
 import json
+from helperfunctions import helper
 import settings
 from datetime import datetime
 from time import sleep
@@ -12,11 +13,22 @@ def sincronizar():
     f"{settings.baseUrl}/cardholders?ChType=8&limit=5000",
     verify=False
     )
-
+  # print(
+  #   f"{settings.baseUrl}/cardholders?ChType=8&limit=5000",
+  #   )
   estudantes = result.json()
-
-  estudantes = [estudante for estudante in estudantes if estudante["AuxDte02"] is not None and estudante["AuxDte03"] is not None]
-  estudantes = [estudante for estudante in estudantes if estudante["CHStartValidityDateTime"] != estudante["AuxDte02"] and estudante["CHEndValidityDateTime"] != estudante["AuxDte03"]]
+  # print(result.status_code)
+  # print(estudantes)
+  helper.printGreen(f'Total de Estudantes Cadastrados: {len(estudantes)}')
+  estudantes_data_filtrada = [estudante for estudante in estudantes if estudante["AuxDte02"] is not None and estudante["AuxDte03"] is not None]
+  helper.printGreen(f'Total de Estudantes que possuem Início e Fim de Vínculo: {len(estudantes_data_filtrada)}')
+  estudantes_validade_filtrada = [
+          estudante for estudante in estudantes_data_filtrada 
+          if estudante["CHStartValidityDateTime"] != estudante["AuxDte02"] 
+          and estudante["CHEndValidityDateTime"] != estudante["AuxDte03"]
+  ]
+  helper.printGreen(f'Total de Estudantes com data não-sincronizada: {len(estudantes_validade_filtrada)}')
+  estudantes = estudantes_validade_filtrada
 
   with open('estudantes_sem_data_fim.txt', 'w') as file:
     for estudante in estudantes:

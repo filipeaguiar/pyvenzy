@@ -8,12 +8,14 @@ from card import Card
 from combolists import ComboList
 import settings
 from database import DataBase
+from decorators import verificar_resposta
 
 class Paciente:
     """
     Classe responsável por lidar com pacientes no sistema Invenzi.
     """
 
+    @verificar_resposta
     @staticmethod
     def getPacienteByIdNumber(IdNumber):
         """
@@ -216,10 +218,6 @@ class Paciente:
         dts = dts + timedelta(hours=3)
         dte = dt.replace(hour=23, minute=59, second=59, microsecond=999)
         dte = dte + timedelta(hours=3)
-        print(json.dumps({
-                    "VisitStart": dts.strftime("%Y-%m-%dT%H:%M:%S"),
-                    "VisitEnd": dte.strftime("%Y-%m-%dT%H:%M:%S")
-                }, indent=2))
         paciente = Paciente.getPacienteByIdNumber(idNumber)
         visita_iniciada = False
         expired_visit = None
@@ -251,7 +249,7 @@ class Paciente:
                     visita_iniciada = True
                     return visita_iniciada
                 else:
-                    print(f'Erro ao iniciar visita para o paciente:  {paciente[0]["FirstName"]} {start_visit.text}')
+                    helper.printRed(f'Erro ao iniciar visita para o paciente:  {paciente[0]["FirstName"]} {start_visit.json()["Message"]}')
                     visita_iniciada = False
                     return visita_iniciada
         else:

@@ -8,6 +8,7 @@ import datetime
 import requests
 import json
 import pyodbc
+from helperfunctions import api_check
 
 warnings.filterwarnings("ignore")
 load_dotenv()
@@ -23,7 +24,8 @@ SELECT
     cardholder.chid,
     CASE 
         WHEN cardholder.CHType = 1 THEN 'VISITANTE'
-        WHEN cardholder.CHType = 3 THEN 'COLABORADOR'
+        WHEN cardholder.CHType = 3 AND aux.AuxLst01 <> 5 THEN 'COLABORADOR'
+        WHEN cardholder.CHType = 3 AND aux.AuxLst01 = 5 THEN 'DOCENTE'
         WHEN cardholder.CHType = 7 THEN 'ACOMPANHANTE'
         WHEN cardholder.CHType = 8 THEN 'ESTUDANTE'
         WHEN cardholder.CHType = 2 THEN 'PACIENTE'
@@ -74,11 +76,11 @@ def filtrar_por_tipo(resultados, tipo, dias_inativos):
 
 
 def liberar():
+    log = ""
     acompanhantes = filtrar_por_tipo(resultados, "ACOMPANHANTE", 3)
     visitantes = filtrar_por_tipo(resultados, "VISITANTE", 365)
-    log = ""
-    # colaboradores = filtrar_por_tipo(resultados, 'COLABORADOR', 365)
-    # estudantes = filtrar_por_tipo(resultados, 'ESTUDANTE', 365)
+    colaboradores = filtrar_por_tipo(resultados, 'COLABORADOR', 60)
+    estudantes = filtrar_por_tipo(resultados, 'ESTUDANTE', 180)
     print(
         f"ACOMPANHANTES com Transito nulo ou mais velho que 3 dias: {len(acompanhantes)}"
     )
@@ -91,15 +93,14 @@ def liberar():
         log
         + f"VISITANTES com Transito nulo ou mais velho que 1 ano: {len(visitantes)}\n"
     )
-    # print(f'COLABORADORES com Transito nulo ou mais velho que 60 dias: {len(colaboradores)}')
-    # log = log + f'COLABORADORES com Transito nulo ou mais velho que 60 dias: {len(colaboradores)}\n'
-    # print(f'ESTUDANTES com Transito nulo ou mais velho que 60 dias: {len(estudantes)}')
+    print(f'COLABORADORES com Transito nulo ou mais velho que 60 dias: {len(colaboradores)}')
+    log = log + f'COLABORADORES com Transito nulo ou mais velho que 60 dias: {len(colaboradores)}\n'
+    print(f'ESTUDANTES com Transito nulo ou mais velho que 60 dias: {len(estudantes)}')
     print(f"TOTAL: {len(acompanhantes) + len(visitantes)}")
     log = log + f"TOTAL: {len(acompanhantes) + len(visitantes)}\n"
-    # print(f'TOTAL: {len(acompanhantes) + len(visitantes) + len(colaboradores) + len(estudantes)}')
-    # log = log + f'TOTAL: {len(acompanhantes) + len(visitantes) + len(colaboradores) + len(estudantes)}\n'
-    queue = (acompanhantes, visitantes)
-    # queue = (acompanhantes, visitantes, colaboradores, estudantes)
+    print(f'TOTAL: {len(acompanhantes) + len(visitantes) + len(colaboradores) + len(estudantes)}')
+    log = log + f'TOTAL: {len(acompanhantes) + len(visitantes) + len(colaboradores) + len(estudantes)}\n'
+    queue = (acompanhantes, visitantes, colaboradores, estudantes)
 
     for tipo in queue:
         for item in tipo:
@@ -131,9 +132,9 @@ def liberar():
 
 def main():
     liberar()
-    connection.close()
 
 
 if __name__ == "__main__":
     # Call main function
-    main()
+    if api_check(settings.baseUrl):
+        main()

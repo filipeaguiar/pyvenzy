@@ -12,7 +12,7 @@ from colaborador import Colaborador
 from estudante import Estudante
 from paciente import Paciente
 from acompanhante import Acompanhante
-from helperfunctions import helper
+from helperfunctions import api_check, helper
 from database import DataBase
 from datetime import datetime
 from sincronizar_datas import sincronizar as sincronizar_datas
@@ -38,6 +38,8 @@ currentDate = DataBase.getTime()
 def main():
   
   sincronizar_datas()
+
+  Estudante.ativarCartoesEstudantes()
   
   # Get daily releases
   pacientes_diarios = Paciente.getLiberacoesDiarias()
@@ -47,12 +49,13 @@ def main():
     Paciente.ativarPaciente(paciente["prontuario"])
     sleep(0.2)
 
+if __name__ == "__main__":
+    if api_check(settings.baseUrl):
+      # Call main function
+      main()
 
-# Call main function
-main()
+      # Print current date and time
+      print(currentDate)
 
-# Print current date and time
-print(currentDate)
-
-# Exit program
-exit()
+    # Exit program
+    exit()
