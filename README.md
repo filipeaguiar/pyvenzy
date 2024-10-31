@@ -100,7 +100,7 @@ Scripts para funções específicas, o nome do arquivo é o mais próximo possí
     * Os estudantes sem acesso ao AGHU são cadastrados manualmente pela equipe da GEP.
 
 * **`main_diario.py`:**
-    * Este script ativa cartões de estudantes que foram modificados há mais de 5 dias, através do método `Estudante.ativarCartoesEstudantes()`.
+    * Este script ativa cartões de estudantes que foram modificados há menos de 5 dias, através do método `Estudante.ativarCartoesEstudantes()`.
     * O script percorre a lista de estudantes ativos no Invenzi e verifica a data da última modificação.
     * Se a data da última modificação for anterior a 5 dias atrás, o cartão do estudante é ativado usando `Card.activateCard`.
     * O nível de acesso "Acesso Estudante" é adicionado (novamente) a cada estudante durante esse processo.

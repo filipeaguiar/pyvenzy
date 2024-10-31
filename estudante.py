@@ -149,7 +149,7 @@ class Estudante:
 
         estudantes = estudantes.json()
         # estudantes =  estudantes where estudante[LastModifDateTime] < datetime.now() - timedelta(days=5)
-        estudantes = [estudante for estudante in estudantes if datetime.fromisoformat(estudante["LastModifDateTime"]) < datetime.now() - timedelta(days=5)]
+        estudantes = [estudante for estudante in estudantes if datetime.fromisoformat(estudante["LastModifDateTime"]) > datetime.now() - timedelta(days=5)]
 
         for estudante in estudantes:
             
